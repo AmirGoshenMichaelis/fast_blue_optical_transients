@@ -2,6 +2,8 @@
 dd/
 photosphere/
 rph/
+pp_dens/
+pp_temp/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
