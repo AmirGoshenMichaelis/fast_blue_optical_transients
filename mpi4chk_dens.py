@@ -46,8 +46,8 @@ def already_exist(fn, odir ,no):
 def get_default_param():
     param = dict()
     param['chk'] = dict()
-    param['chk']['dir'] = '/home/amirm/code/fast_blue_optical_transients/dd/exp1/'
-    param['chk']['odir'] = '/home/amirm/code/fast_blue_optical_transients/pp_dens/exp1/'
+    param['chk']['dir'] = '/home/amirm/code/fast_blue_optical_transients/dd/exp3/'
+    param['chk']['odir'] = '/home/amirm/code/fast_blue_optical_transients/pp_dens/exp3/'
     param['chk']['range'] = [1, 300]
     param['chk']['fn'] = 'xx_zz_dens_time_{:04}.npz'
     return param
