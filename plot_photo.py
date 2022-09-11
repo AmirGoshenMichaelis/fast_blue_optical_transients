@@ -11,8 +11,18 @@ day  = 24*3600
 def remove_nan(x):
     return x[~np.isnan(x)]
 ###
-dir = '/home/amirm/code/fast_blue_optical_transients/dd/exp1/'
-odir = '/home/amirm/code/fast_blue_optical_transients/photosphere/exp1/'
+def Rot(theta, phi):
+    theta = theta*np.pi/180.
+    phi = phi*np.pi/180.
+    R = np.array(
+        [[np.cos(theta)*np.cos(phi), np.cos(theta)*np.sin(phi), -np.sin(theta)],
+         [-np.sin(phi)             , np.cos(phi)              , 0],
+         [np.cos(phi)*np.sin(theta), np.sin(theta)*np.sin(phi), np.cos(theta)]]
+    )
+    return R
+###
+dir = '/home/amirm/code/fast_blue_optical_transients/dd/exp3/'
+odir = '/home/amirm/code/fast_blue_optical_transients/photosphere/exp3/'
 os.chdir(dir)
 cmap = pl.cm.get_cmap('Spectral', 512)
 ###
@@ -43,6 +53,7 @@ def calc(no):
         theta = dd['theta']
         phi   = dd['phi']
 
+        Temp =15e3
         pr_phi = 0.
         for pr_theta in [10, 30, 50, 80,]:
             fig, ax = pl.subplots()
@@ -56,7 +67,15 @@ def calc(no):
             k = np.argmin(np.abs(phi-pr_phi))
             pp = [~np.isnan(XYZ[j,k,:,l]) for l in range(3)]
             pp = pp[0]&pp[1]&pp[2]
-            ax.plot(XYZ[j,k,pp,0]/AU,XYZ[j,k,pp,2]/AU, 'D', markerfacecolor='Cyan', markeredgecolor='Red', markersize=5)
+
+            teff_pp = (~np.isnan(T[j,k,:])) & (T[j,k,:]>Temp)
+            pp = pp[0]&pp[1]&pp[2]&teff_pp
+            vec = XYZ[j,k,pp,:].transpose()
+            R   = Rot(theta[j],phi[k])
+            los_sys = np.dot(R,vec)
+            pos = los_sys[2,:]>=0
+
+            ax.plot(XYZ[j,k,pp,0][pos]/AU,XYZ[j,k,pp,2][[pos]]/AU, 'D', markerfacecolor='Cyan', markeredgecolor='Red', markersize=5)
 
             ax.set_aspect('equal')
             ax.text(ax.get_xlim()[0]*(1-0.067), ax.get_ylim()[1]*(1-0.15), f't={ctime:.0f} d', bbox=dict(boxstyle="round", fc="w"), fontsize=14)
