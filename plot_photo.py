@@ -53,7 +53,7 @@ def calc(no):
         theta = dd['theta']
         phi   = dd['phi']
 
-        Temp =15e3
+        Temp =0.0
         pr_phi = 0.
         for pr_theta in [10, 30, 50, 80,]:
             fig, ax = pl.subplots()
