@@ -75,7 +75,7 @@ def calc(no):
             los_sys = np.dot(R,vec)
             pos = los_sys[2,:]>=0
 
-            ax.plot(XYZ[j,k,pp,0][pos]/AU,XYZ[j,k,pp,2][[pos]]/AU, 'D', markerfacecolor='Cyan', markeredgecolor='Red', markersize=5)
+            ax.plot(XYZ[j,k,pp,0][pos]/AU,XYZ[j,k,pp,2][pos]/AU, 'D', markerfacecolor='Cyan', markeredgecolor='Red', markersize=5)
 
             ax.set_aspect('equal')
             ax.text(ax.get_xlim()[0]*(1-0.067), ax.get_ylim()[1]*(1-0.15), f't={ctime:.0f} d', bbox=dict(boxstyle="round", fc="w"), fontsize=14)
@@ -87,7 +87,7 @@ def calc(no):
             pl.close(fig)
 
 arg_list = list()
-for no in range(199,300):
+for no in range(1,300):
     arg_list.append( (no,) )
 
 with Pool(8) as p:
