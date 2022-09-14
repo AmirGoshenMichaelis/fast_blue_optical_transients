@@ -55,7 +55,8 @@ def calc(no):
 
         Temp =0.0
         pr_phi = 0.
-        for pr_theta in [10, 30, 50, 80,]:
+        # for pr_theta in [10, 30, 50, 80,]:
+        for pr_theta in [10, 50, 80,]:
             fig, ax = pl.subplots()
             cf    = ax.contourf(X, Y, Z, np.linspace(-18., -8, 512), cmap=cmap, extend='both')
             fig.text(0.45, 0.9, '$\\rho~[\\rm{g/cm^3}]$', fontsize=14)
