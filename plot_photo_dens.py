@@ -64,12 +64,12 @@ def calc(no):
         # for pr_theta in [10, 30, 50, 80,]:
         for pr_theta in [10, 50, 80,]:
             fig, ax = pl.subplots()
-            cf    = ax.contourf(X, Y, Z, np.linspace(-18., -10, 512), cmap=cmap, extend='both')
+            cf    = ax.contourf(X, Y, Z, np.linspace(-18., -12, 512), cmap=cmap, extend='both')
             decimate = 20
             Q  = ax.quiver(X[::decimate,::decimate],Y[::decimate,::decimate],Vx[::decimate,::decimate],Vy[::decimate,::decimate], scale=0.1, units='xy',color=[0.1,0.1,0.1], edgecolors=[0.0,0.0,0.0])
             fig.text(0.45, 0.9, 'log ($\\rho~[\\rm{g/cm^3}]$)', fontsize=14)
             cax = pl.axes([0.71, 0.12, 0.022, 0.74])
-            cbobj = fig.colorbar(cf, cax=cax, format='%2.f', ticks=np.arange(-18., -9.9, 1))
+            cbobj = fig.colorbar(cf, cax=cax, format='%2.f', ticks=np.arange(-18., -11.9, 1))
             # cax.tick_params(axis='both', which='major', labelsize=14)
 
             j = np.argmin(np.abs(theta-pr_theta))
@@ -96,8 +96,8 @@ def calc(no):
             pl.close(fig)
 
 arg_list = list()
-# for no in range(1,300):
-for no in [1, 50, 100, 150, 200, 250]:
+for no in range(1,300):
+# for no in [1, 50, 100, 150, 200, 250]:
     arg_list.append( (no,) )
 
 with Pool(8) as p:
