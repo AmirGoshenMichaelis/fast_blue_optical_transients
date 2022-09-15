@@ -24,7 +24,7 @@ def Rot(theta, phi):
 dir = '/home/amirm/code/fast_blue_optical_transients/dd/exp3/'
 odir = '/home/amirm/code/fast_blue_optical_transients/photosphere/exp3/'
 os.chdir(dir)
-cmap = pl.cm.get_cmap('Spectral', 512)
+cmap = pl.cm.get_cmap('coolwarm', 512)
 ###
 def calc(no):
     fn = os.path.join(dir,'xx_zz_dens_time_{:04}.npz'.format(no))
@@ -34,7 +34,14 @@ def calc(no):
     dd = np.load(fn)
     X = dd['X']/AU
     Y = dd['Z']/AU
-    Z = np.log10(dd['dens'])
+    # Z = np.log10(dd['dens'])
+    Z    = np.log10(dd['temp'])
+    Vx   = dd['velx']
+    Vy   = dd['velz']
+    Vz   = dd['velz']
+    Vtot = np.sqrt( Vx**2 + Vy**2 + Vz**2 )
+    Vx   = Vx/Vtot
+    Vy   = Vy/Vtot
     ctime = dd['time']/day
     # for fix_kappa in [0.06, 0.3, 1.5, 0.1, 0.2]:
     for fix_kappa in [0.1,]:
@@ -53,15 +60,18 @@ def calc(no):
         theta = dd['theta']
         phi   = dd['phi']
 
-        Temp =0.0
+        Temp = 0.0
         pr_phi = 0.
         # for pr_theta in [10, 30, 50, 80,]:
         for pr_theta in [10, 50, 80,]:
             fig, ax = pl.subplots()
-            cf    = ax.contourf(X, Y, Z, np.linspace(-18., -8, 512), cmap=cmap, extend='both')
-            fig.text(0.45, 0.9, '$\\rho~[\\rm{g/cm^3}]$', fontsize=14)
+            decimate = 20
+            cf = ax.contourf(X, Y, Z, np.linspace(3.5, 4.3, 512), cmap=cmap, extend='both')
+            Q  = ax.quiver(X[::decimate,::decimate],Y[::decimate,::decimate],Vx[::decimate,::decimate],Vy[::decimate,::decimate], scale=0.1, units='xy',color=[0.1,0.1,0.1], edgecolors=[0.0,0.0,0.0])
+
+            fig.text(0.45, 0.9, 'log (T[K])', fontsize=14)
             cax = pl.axes([0.71, 0.12, 0.022, 0.74])
-            cbobj = fig.colorbar(cf, cax=cax, format='%2.f', ticks=np.arange(-18., -7., 1))
+            cbobj = fig.colorbar(cf, cax=cax, format='%2.1f', ticks=np.arange(3.5, 4.31, 0.2))
             # cax.tick_params(axis='both', which='major', labelsize=14)
 
             j = np.argmin(np.abs(theta-pr_theta))
@@ -83,12 +93,13 @@ def calc(no):
             ax.set_xlabel('X [AU]', fontsize=14)
             ax.set_ylabel('Z [AU]', fontsize=14)
 
-            ofn = 'kappa_{}/{}/kappa_{}_dens_photo_{}_PN1_{:04}.png'.format(fix_kappa, pr_theta, fix_kappa, pr_theta, no)
+            ofn = 'kappa_{}/{}/kappa_{}_los_{}_temp_{:04}.png'.format(fix_kappa, pr_theta, fix_kappa, pr_theta, no)
             fig.savefig(os.path.join(odir, ofn))
             pl.close(fig)
 
 arg_list = list()
 for no in range(1,300):
+# for no in [1, 50, 100, 150, 200, 250]:
     arg_list.append( (no,) )
 
 with Pool(8) as p:

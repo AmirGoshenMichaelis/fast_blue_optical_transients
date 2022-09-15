@@ -35,6 +35,12 @@ def calc(no):
     X = dd['X']/AU
     Y = dd['Z']/AU
     Z = np.log10(dd['dens'])
+    Vx   = dd['velx']
+    Vy   = dd['velz']
+    Vz   = dd['velz']
+    Vtot = np.sqrt( Vx**2 + Vy**2 + Vz**2 )
+    Vx   = Vx/Vtot
+    Vy   = Vy/Vtot
     ctime = dd['time']/day
     # for fix_kappa in [0.06, 0.3, 1.5, 0.1, 0.2]:
     for fix_kappa in [0.1,]:
@@ -58,10 +64,12 @@ def calc(no):
         # for pr_theta in [10, 30, 50, 80,]:
         for pr_theta in [10, 50, 80,]:
             fig, ax = pl.subplots()
-            cf    = ax.contourf(X, Y, Z, np.linspace(-18., -8, 512), cmap=cmap, extend='both')
-            fig.text(0.45, 0.9, '$\\rho~[\\rm{g/cm^3}]$', fontsize=14)
+            cf    = ax.contourf(X, Y, Z, np.linspace(-18., -10, 512), cmap=cmap, extend='both')
+            decimate = 20
+            Q  = ax.quiver(X[::decimate,::decimate],Y[::decimate,::decimate],Vx[::decimate,::decimate],Vy[::decimate,::decimate], scale=0.1, units='xy',color=[0.1,0.1,0.1], edgecolors=[0.0,0.0,0.0])
+            fig.text(0.45, 0.9, 'log ($\\rho~[\\rm{g/cm^3}]$)', fontsize=14)
             cax = pl.axes([0.71, 0.12, 0.022, 0.74])
-            cbobj = fig.colorbar(cf, cax=cax, format='%2.f', ticks=np.arange(-18., -7., 1))
+            cbobj = fig.colorbar(cf, cax=cax, format='%2.f', ticks=np.arange(-18., -9.9, 1))
             # cax.tick_params(axis='both', which='major', labelsize=14)
 
             j = np.argmin(np.abs(theta-pr_theta))
@@ -83,12 +91,13 @@ def calc(no):
             ax.set_xlabel('X [AU]', fontsize=14)
             ax.set_ylabel('Z [AU]', fontsize=14)
 
-            ofn = 'kappa_{}/{}/kappa_{}_dens_photo_{}_PN1_{:04}.png'.format(fix_kappa, pr_theta, fix_kappa, pr_theta, no)
+            ofn = 'kappa_{}/{}/kappa_{}_los_{}_dens_{:04}.png'.format(fix_kappa, pr_theta, fix_kappa, pr_theta, no)
             fig.savefig(os.path.join(odir, ofn))
             pl.close(fig)
 
 arg_list = list()
-for no in range(1,300):
+# for no in range(1,300):
+for no in [1, 50, 100, 150, 200, 250]:
     arg_list.append( (no,) )
 
 with Pool(8) as p:

@@ -83,7 +83,7 @@ def dens_(param, plane='xz', fontsize=16):
 
     fig.text(0.45, 0.9, r'$\rho~[g~cm^{-3}]$', fontsize=fontsize)
     cax = pl.axes([0.91, 0.12, 0.022, 0.74])
-    cbobj = fig.colorbar(cf, cax=cax, format='%2.f', ticks=np.arange(-18., -10.1 ,1))
+    cbobj = fig.colorbar(cf, cax=cax, format='%2.f', ticks=np.arange(-18., -9.9 ,1))
 
     ofn = os.path.join(param['chk']['odir'],f'dens_{plane}_{param["no."]:04}.png')
     fig.savefig(ofn, dpi=300, facecolor='w', edgecolor='w', orientation='portrait', transparent=False, bbox_inches=None, pad_inches=0.1)
