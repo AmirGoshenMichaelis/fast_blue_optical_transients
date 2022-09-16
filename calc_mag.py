@@ -87,7 +87,7 @@ def calc(no, fix_kappa):
             dr = np.mean(dr)
             if dr==0: dr=1e-16
             # photosphere_radios = np.sum( np.abs(2.*np.pi*los_sys[0,pos]*dr) )*sigma_sb*(8224**4) 
-            photosphere_radios = 4. * np.sum( np.abs(2.*np.pi*los_sys[0,pos]*dr) )*sigma_sb*(8000**4) 
+            photosphere_radios = 4. * np.sum( np.abs(2.*np.pi*los_sys[0,pos]*dr) )*sigma_sb*(7e3**4) 
             # photosphere_radios = np.sqrt( np.sum( np.abs(2.*los_sys[0,pos]*dr) ) )
             # photosphere_radios = np.sqrt( np.sum( np.abs(los_sys[0,pos]*dr)*teff_pos**4/np.sum(teff_pos**4) ) )
             # photosphere_radios = np.max(los_sys[0,pos])
@@ -155,6 +155,7 @@ def main():
             y = 4.64-2.5*np.log10(r_ph[:,i]/Lsun)
             y[y>30]=np.nan
             # y[t<=178]=np.nan
+            # y = r_ph[:,i]
             linestyle = '-'
             if i<2:
                 linestyle = '--'
@@ -162,6 +163,8 @@ def main():
 
         ylimit = ax.get_ylim()
         ax.set_ylim(-22.0, -13.0)
+        # ax.set_ylim(-26.5, -18.0)
+        # ax.set_ylim(0, 9e31)
         # ax.set_ylim(ylimit[0], -16.0)
         # ax.set_ylim([9, 15])
         ax.invert_yaxis()
@@ -173,9 +176,11 @@ def main():
 
         ax.set_xlabel('t (day)', fontsize=19)
         ax.set_ylabel('Absolute Magnitude', fontsize=19)
+        # ax.set_ylabel('Area ', fontsize=19)
         ax.legend(fontsize=19)
         ax.tick_params(axis='both', labelsize=19)
-        fig.savefig(os.path.join(odir, f'mag_t_AU_{fix_kappa}_T_{Temp/1e3:.0f}e3_regular.png'))
+        # fig.savefig(os.path.join(odir, f'area_k_{fix_kappa}_T_{Temp/1e3:.0f}e3.png'))
+        fig.savefig(os.path.join(odir, f'mag_k_{fix_kappa}_T_{Temp/1e3:.0f}e3.png'))
         pl.close(fig)
 
 ###
