@@ -21,8 +21,8 @@ def Rot(theta, phi):
     )
     return R
 ###
-dir = '/home/amirm/code/fast_blue_optical_transients/dd/exp3/'
-odir = '/home/amirm/code/fast_blue_optical_transients/photosphere/exp3/'
+dir = '/home/amirm/code/fast_blue_optical_transients/dd/exp4/'
+odir = '/home/amirm/code/fast_blue_optical_transients/photosphere/exp4/'
 os.chdir(dir)
 cmap = pl.cm.get_cmap('Spectral', 512)
 ###
@@ -59,7 +59,7 @@ def calc(no):
         theta = dd['theta']
         phi   = dd['phi']
 
-        Temp =0.0
+        Temp = 15.0e3
         pr_phi = 0.
         # for pr_theta in [10, 30, 50, 80,]:
         for pr_theta in [10, 50, 80,]:
