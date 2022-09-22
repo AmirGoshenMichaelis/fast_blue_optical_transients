@@ -1,6 +1,7 @@
 #! /usr/bin/python3
 ###
 import os
+import sys
 import numpy as np
 from matplotlib import pyplot as pl
 from multiprocessing import Pool
@@ -21,8 +22,11 @@ def Rot(theta, phi):
     )
     return R
 ###
-dir = '/home/amirm/code/fast_blue_optical_transients/dd/exp4/'
-odir = '/home/amirm/code/fast_blue_optical_transients/photosphere/exp4/'
+exp_dir = sys.argv[2]
+Temp = float(sys.argv[1])*1e3
+
+dir  = f'/home/amirm/code/fast_blue_optical_transients/dd/{exp_dir}/'
+odir = f'/home/amirm/code/fast_blue_optical_transients/photosphere/{exp_dir}/'
 os.chdir(dir)
 cmap = pl.cm.get_cmap('coolwarm', 512)
 ###
@@ -60,7 +64,6 @@ def calc(no):
         theta = dd['theta']
         phi   = dd['phi']
 
-        Temp = 15.0e3
         pr_phi = 0.
         # for pr_theta in [10, 30, 50, 80,]:
         for pr_theta in [10, 50, 80,]:
