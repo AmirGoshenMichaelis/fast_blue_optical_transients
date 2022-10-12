@@ -186,6 +186,7 @@ def main():
         ax.tick_params(axis='both', labelsize=19)
         # fig.savefig(os.path.join(odir, f'area_k_{fix_kappa}_T_{Temp/1e3:.0f}e3.png'))
         fig.savefig(os.path.join(odir, f'mag_k_{fix_kappa}_T_{Temp/1e3:.0f}e3.png'))
+        # pl.show()
         pl.close(fig)
 
 ###
