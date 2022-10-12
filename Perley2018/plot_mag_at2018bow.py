@@ -16,8 +16,8 @@ mjd = np.array([])
 mag = np.array([])
 err = np.array([])
 
-for i, inst in enumerate(dd['inst']):
-    if 'V' in inst.upper():
+for i, filt in enumerate(dd['filt']):
+    if 'V' == filt.upper():
         mjd = np.append(mjd, dd['mjd'][i])
         mag = np.append(mag, dd['mag'][i])
         err = np.append(mag, dd['err'][i])

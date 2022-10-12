@@ -1,5 +1,6 @@
 #! /usr/bin/python3
 ###
+from cProfile import label
 import os
 import sys
 import numpy as np
@@ -28,6 +29,7 @@ exp_dir = sys.argv[2]
 base_dir = '/home/amirm/code/fast_blue_optical_transients/'
 dir  = os.path.join(base_dir,'dd',exp_dir)
 odir = os.path.join(base_dir,'rph',exp_dir)
+at2018cow_dir = os.path.join(base_dir,'Perley2018')
 os.chdir(dir)
 cmap = pl.cm.get_cmap('Spectral', 512)
 Temp = float(sys.argv[1])*1e3
@@ -139,6 +141,7 @@ def main():
             do_calc(rph_npz_fn, fix_kappa)
 
     # M=m-5*np.log10(60e6)+5
+    at2018 = np.load(os.path.join(at2018cow_dir,'AT2018bow.npz'))
 
     for fix_kappa in fix_kappa_list:
         rph_npz_fn = os.path.join(odir, f'mag_{fix_kappa}_T_{Temp/1e3:.0f}e3.npz')
@@ -151,6 +154,7 @@ def main():
         key = [f'$\\theta = {theta}$' for theta in [10, 30, 50, 80,] ]
 
         fig, ax = pl.subplots(figsize=(11,7), dpi=150)
+        ax.plot(at2018['mjd']-at2018['mjd'][0]+70,at2018['mag'], 'D', label='Perley V')
         for i in range(n_theta):
             y = 4.64-2.5*np.log10(r_ph[:,i]/Lsun)
             y[y>30]=np.nan
@@ -162,16 +166,17 @@ def main():
             ax.plot(t,y, linestyle, label=key[i], linewidth=2.0)
 
         ylimit = ax.get_ylim()
-        ax.set_ylim(-22.0, -13.0)
+        # ax.set_ylim(-22.0, -13.0)
         # ax.set_ylim(-26.5, -18.0)
         # ax.set_ylim(0, 9e31)
         # ax.set_ylim(ylimit[0], -16.0)
-        # ax.set_ylim([9, 15])
+        ax.set_ylim([-20, -17])
         ax.invert_yaxis()
 
         xlimit = ax.get_xlim()
-        xlimit = [174, 260]
-        ax.set_xlim(xlimit)
+        ax.set_xlim([50, 120])
+        # xlimit = [50, 110]
+        # ax.set_xlim(xlimit)
         # ax.set_xticks(np.arange(xlimit[0],xlimit[1],5))
 
         ax.set_xlabel('t (day)', fontsize=19)
