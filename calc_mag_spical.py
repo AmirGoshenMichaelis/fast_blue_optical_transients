@@ -1,5 +1,6 @@
 #! /usr/bin/python3
 ###
+from cProfile import label
 import os
 import sys
 import numpy as np
@@ -138,7 +139,7 @@ def do_calc(rph_npz_fn, fix_kappa):
     np.savez(rph_npz_fn, t=t, r_ph=r_ph)
 ###
 def main():
-    # fix_kappa_list = [0.06, 0.3, 1.5, 0.1, 0.2]
+    # fix_kappa_list = [0.005, 0.01, 0.06, 0.3, 1.5, 0.1, 0.2]
     fix_kappa_list = [0.005, 0.01,]
     for fix_kappa in fix_kappa_list:
         rph_npz_fn = os.path.join(odir, f'mag_{fix_kappa}_T_{Temp/1e3:.0f}e3.npz')
@@ -160,15 +161,17 @@ def main():
 
         fig, ax = pl.subplots(figsize=(11,7), dpi=150)
         # ax.plot(at2018['mjd']-at2018['mjd'][0]+70,at2018['mag'], 'D', label='Perley V')
-        for i in range(n_theta):
-            y = 4.64-2.5*np.log10(r_ph[:,i]/Lsun)
-            y[y>30]=np.nan
-            # y[t<=178]=np.nan
-            # y = r_ph[:,i]
-            linestyle = '-'
-            if i<2:
-                linestyle = '--'
-            ax.plot(t,y, linestyle, label=key[i], linewidth=2.0)
+
+        i = 1
+        y = 4.64-2.5*np.log10(r_ph[:,i]/Lsun)
+        # y = r_ph[:,i]/Lsun
+        y[y>30]=np.nan
+        # y[t<=178]=np.nan
+        # y = r_ph[:,i]
+        linestyle = '-'
+        # if i<2:
+        #     linestyle = '--'
+        ax.plot(t,y, linestyle, label=key[i], linewidth=2.0)
 
         ylimit = ax.get_ylim()
         # ax.set_ylim(-22.0, -13.0)
@@ -179,7 +182,7 @@ def main():
         ax.invert_yaxis()
 
         xlimit = ax.get_xlim()
-        # ax.set_xlim([50, 120])
+        ax.set_xlim([xlimit[0], 175])
         # xlimit = [50, 110]
         # ax.set_xlim(xlimit)
         # ax.set_xticks(np.arange(xlimit[0],xlimit[1],5))
@@ -190,7 +193,7 @@ def main():
         ax.legend(fontsize=19)
         ax.tick_params(axis='both', labelsize=19)
         # fig.savefig(os.path.join(odir, f'area_k_{fix_kappa}_T_{Temp/1e3:.0f}e3.png'))
-        fig.savefig(os.path.join(odir, f'mag_k_{fix_kappa}_T_{Temp/1e3:.0f}e3.png'))
+        fig.savefig(os.path.join(odir, f'mag_spec_k_{fix_kappa}_T_{Temp/1e3:.0f}e3.png'))
         # pl.show()
         pl.close(fig)
 

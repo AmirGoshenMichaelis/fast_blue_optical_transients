@@ -22,11 +22,14 @@ def Rot(theta, phi):
     )
     return R
 ###
-dir  = '/home/amirm/code/flash_disk_v4.6.2/obj-res/akashi/npz_6/dd/'
-odir = '/home/amirm/code/flash_disk_v4.6.2/obj-res/akashi/npz_6/rph/'
+exp_dir = sys.argv[2]
+Temp = float(sys.argv[1])*1e3
+
+base_dir = '/home/amirm/code/fast_blue_optical_transients/'
+dir  = os.path.join(base_dir,'dd',exp_dir)
+odir = os.path.join(base_dir,'rph',exp_dir)
 os.chdir(dir)
 cmap = pl.cm.get_cmap('Spectral', 512)
-Temp = float(sys.argv[1])
 ###
 def calc(no, fix_kappa):
     fn = os.path.join(dir,'xx_zz_dens_time_{:04}.npz'.format(no))

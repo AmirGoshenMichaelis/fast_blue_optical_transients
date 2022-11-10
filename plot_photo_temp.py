@@ -29,6 +29,26 @@ dir  = f'/home/amirm/code/fast_blue_optical_transients/dd/{exp_dir}/'
 odir = f'/home/amirm/code/fast_blue_optical_transients/photosphere/{exp_dir}/'
 os.chdir(dir)
 cmap = pl.cm.get_cmap('coolwarm', 512)
+# temp_limit = [3.7, 4.6]
+temp_limit = [3., 4.2]
+###
+def find_dynamic_range():
+    logT = []
+    logD = []
+    for no in range(500):
+        fn = os.path.join(dir,'xx_zz_dens_time_{:04}.npz'.format(no))
+        if not os.path.exists(fn):
+            print('skipping {}'.format(fn))
+            continue
+        dd = np.load(fn)
+        Z = np.log10(dd['temp'])
+        D = np.log10(dd['dens'])
+        logT.append( (Z.min(),Z.max()) )
+        logD.append( (D.min(),D.max()) )
+    logT = np.array(logT)
+    logD = np.array(logD)
+    return logT, logD
+
 ###
 def calc(no):
     fn = os.path.join(dir,'xx_zz_dens_time_{:04}.npz'.format(no))
@@ -47,8 +67,8 @@ def calc(no):
     Vx   = Vx/Vtot
     Vy   = Vy/Vtot
     ctime = dd['time']/day
-    # for fix_kappa in [0.06, 0.3, 1.5, 0.1, 0.2]:
-    for fix_kappa in [0.1,]:
+    for fix_kappa in [0.06, 0.3, 1.5, 0.1, 0.2]:
+    # for fix_kappa in [0.01,]:
         fn = os.path.join(dir, 'TRL_eff_{:04}_fix_kappa_{}.npz'.format(no, fix_kappa) )
         if not os.path.exists(fn):
             print('skipping {}'.format(fn))
@@ -69,12 +89,12 @@ def calc(no):
         for pr_theta in [10, 50, 80,]:
             fig, ax = pl.subplots()
             decimate = 20
-            cf = ax.contourf(X, Y, Z, np.linspace(3.5, 4.3, 512), cmap=cmap, extend='both')
+            cf = ax.contourf(X, Y, Z, np.linspace(temp_limit[0], temp_limit[1], 512), cmap=cmap, extend='both')
             Q  = ax.quiver(X[::decimate,::decimate],Y[::decimate,::decimate],Vx[::decimate,::decimate],Vy[::decimate,::decimate], scale=0.1, units='xy',color=[0.1,0.1,0.1], edgecolors=[0.0,0.0,0.0])
 
             fig.text(0.45, 0.9, 'log (T[K])', fontsize=14)
             cax = pl.axes([0.71, 0.12, 0.022, 0.74])
-            cbobj = fig.colorbar(cf, cax=cax, format='%2.1f', ticks=np.arange(3.5, 4.31, 0.2))
+            cbobj = fig.colorbar(cf, cax=cax, format='%2.1f', ticks=np.arange(temp_limit[0], temp_limit[1]+0.01, 0.2))
             # cax.tick_params(axis='both', which='major', labelsize=14)
 
             j = np.argmin(np.abs(theta-pr_theta))
@@ -101,7 +121,7 @@ def calc(no):
             pl.close(fig)
 
 arg_list = list()
-for no in range(1,300):
+for no in range(1,500):
 # for no in [1, 50, 100, 150, 200, 250]:
     arg_list.append( (no,) )
 

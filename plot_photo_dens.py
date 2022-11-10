@@ -29,6 +29,25 @@ dir  = f'/home/amirm/code/fast_blue_optical_transients/dd/{exp_dir}/'
 odir = f'/home/amirm/code/fast_blue_optical_transients/photosphere/{exp_dir}/'
 os.chdir(dir)
 cmap = pl.cm.get_cmap('Spectral', 512)
+dens_limit = [-18.5, -10.25]
+###
+def find_dynamic_range():
+    logT = []
+    logD = []
+    for no in range(500):
+        fn = os.path.join(dir,'xx_zz_dens_time_{:04}.npz'.format(no))
+        if not os.path.exists(fn):
+            print('skipping {}'.format(fn))
+            continue
+        dd = np.load(fn)
+        Z = np.log10(dd['temp'])
+        D = np.log10(dd['dens'])
+        logT.append( (Z.min(),Z.max()) )
+        logD.append( (D.min(),D.max()) )
+    logT = np.array(logT)
+    logD = np.array(logD)
+    return logT, logD
+
 ###
 def calc(no):
     fn = os.path.join(dir,'xx_zz_dens_time_{:04}.npz'.format(no))
@@ -46,8 +65,8 @@ def calc(no):
     Vx   = Vx/Vtot
     Vy   = Vy/Vtot
     ctime = dd['time']/day
-    # for fix_kappa in [0.06, 0.3, 1.5, 0.1, 0.2]:
-    for fix_kappa in [0.1,]:
+    for fix_kappa in [0.06, 0.3, 1.5, 0.1, 0.2]:
+    # for fix_kappa in [0.01,]:
         fn = os.path.join(dir, 'TRL_eff_{:04}_fix_kappa_{}.npz'.format(no, fix_kappa) )
         if not os.path.exists(fn):
             print('skipping {}'.format(fn))
@@ -67,12 +86,14 @@ def calc(no):
         # for pr_theta in [10, 30, 50, 80,]:
         for pr_theta in [10, 50, 80,]:
             fig, ax = pl.subplots()
-            cf    = ax.contourf(X, Y, Z, np.linspace(-18., -12, 512), cmap=cmap, extend='both')
+            cf    = ax.contourf(X, Y, Z, np.linspace(dens_limit[0], dens_limit[1], 512), cmap=cmap, extend='both')
             decimate = 20
             Q  = ax.quiver(X[::decimate,::decimate],Y[::decimate,::decimate],Vx[::decimate,::decimate],Vy[::decimate,::decimate], scale=0.1, units='xy',color=[0.1,0.1,0.1], edgecolors=[0.0,0.0,0.0])
+            # ii=np.where(np.diff(X.transpose()[0,:])!=0)[0]
+            # Q  = ax.streamplot(X.transpose()[ii,ii],Y.transpose()[ii,ii],Vx.transpose()[ii,ii],Vy.transpose()[ii,ii], color=[0.1,0.1,0.1])
             fig.text(0.45, 0.9, 'log ($\\rho~[\\rm{g/cm^3}]$)', fontsize=14)
             cax = pl.axes([0.71, 0.12, 0.022, 0.74])
-            cbobj = fig.colorbar(cf, cax=cax, format='%2.f', ticks=np.arange(-18., -11.9, 1))
+            cbobj = fig.colorbar(cf, cax=cax, format='%2.f', ticks=np.arange(dens_limit[0], dens_limit[1]+0.1, 1))
             # cax.tick_params(axis='both', which='major', labelsize=14)
 
             j = np.argmin(np.abs(theta-pr_theta))
@@ -99,10 +120,10 @@ def calc(no):
             pl.close(fig)
 
 arg_list = list()
-for no in range(1,300):
-# for no in [1, 50, 100, 150, 200, 250]:
+for no in range(0, 500):
+#for no in [1, 50, 100, 150, 200, 250]:
     arg_list.append( (no,) )
 
 with Pool(8) as p:
     data = p.starmap(calc, arg_list)
-
+# calc(*arg_list[1])
