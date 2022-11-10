@@ -3,9 +3,7 @@
 import os
 import sys
 import math
-from xml.dom.pulldom import ErrorHandler
 import numpy as np
-from sklearn.model_selection import LeaveOneGroupOut
 import yt
 from yt import derived_field
 from matplotlib import pyplot as pl
