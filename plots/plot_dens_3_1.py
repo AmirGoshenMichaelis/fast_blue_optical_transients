@@ -17,8 +17,8 @@ Msun = C.M_sun.cgs.value
 day  = 24*3600
 ###
 # cmap_array = ['Spectral', 'nipy_spectral', 'inferno', 'coolwarm', 'spring jet', 'gist_earth', 'summer', 'hot', 'Greys', 'rainbow']
-chk_dir = '/home/amirm/code/flash_disk_v4.6.2/obj-res/akashi/npz_9/dd/'
-odir    = '/home/amirm/code/flash_disk_v4.6.2/obj-res/akashi/npz_9/plots/'
+chk_dir = '/home/amirm/code/fast_blue_optical_transients/dd/t5'
+odir    = '/home/amirm/code/fast_blue_optical_transients/plots/'
 fname = [os.path.join(chk_dir,f'xx_zz_dens_time_{i:04}.npz') for i in (1, 45, 89) ]
 cmap = pl.cm.get_cmap('coolwarm', 512)
 ###
