@@ -3,7 +3,6 @@
 import os
 import sys
 import math
-from xml.dom.pulldom import ErrorHandler
 import numpy as np
 import yt
 from yt import derived_field
