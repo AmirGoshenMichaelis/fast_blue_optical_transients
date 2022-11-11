@@ -14,15 +14,14 @@ Msun = C.M_sun.cgs.value
 day  = 24*3600
 ###
 # cmap_array = ['Spectral', 'nipy_spectral', 'inferno', 'coolwarm', 'spring jet', 'gist_earth', 'summer', 'hot', 'Greys', 'rainbow']
-cmap = pl.cm.get_cmap('coolwarm', 512)
 ###
 
-def plot_dens(fn, odir, fontsize=16):
-    zlimit = [-15.8, -10.8]
+def plot_dens(fn, odir, fontsize=18):
+
     if not os.path.exists(fn):
         raise Exception(f'File not found (plot_dens) {fn}')
 
-    fig, ax = pl.subplots(1, 1,figsize=(8,8), dpi=150)
+    fig, ax = pl.subplots(1, 1,figsize=(10,8), dpi=150)
     # fig.subplots_adjust(wspace=0.01, hspace=0.05)
 
     ldata = np.load(fn)
@@ -34,6 +33,9 @@ def plot_dens(fn, odir, fontsize=16):
     Y       = ldata['Z']/AU
     Z       = np.log10(ldata['dens'])
     ctime   = int(ldata['time']/day)
+
+    cmap = pl.cm.get_cmap('Spectral', 512)
+    zlimit = np.round( [Z.min(),Z.max()], 1 )
 
     decimate = 50
     cf = ax.contourf(X, Y, Z, np.linspace(zlimit[0], zlimit[1], 512), cmap=cmap, extend='both')
@@ -47,9 +49,10 @@ def plot_dens(fn, odir, fontsize=16):
     ax.set_xlabel(r'$X/AU$', size=fontsize)
     ax.set_ylabel(r'$Z/AU$', size=fontsize)
 
-    fig.text(0.4, 0.886, r'$\log~\rho~[\rm{g~cm^{-3}}]$', fontsize=fontsize)
-    cax = pl.axes([0.91, 0.12, 0.022, 0.74])
-    cbobj = fig.colorbar(cf, cax=cax, format='%2.1f', ticks=np.round(np.arange(zlimit[0],zlimit[1]+0.1,0.5),1))
+    fig.text(0.4, 0.897, r'$\log~\rho~[\rm{g~cm^{-3}}]$', fontsize=fontsize)
+    # cax = pl.axes([0.91, 0.12, 0.022, 0.74])
+    # cbobj = fig.colorbar(cf, cax=cax, format='%2.1f', ticks=np.round(np.arange(zlimit[0],zlimit[1]+0.1,0.5),1))
+    cbobj = fig.colorbar(cf, ax=ax, format='%2.1f', ticks=np.round(np.arange(zlimit[0],zlimit[1]+0.1,0.5),1))
     cbobj.ax.tick_params(axis='both', labelsize=fontsize)
 
     ofn = os.path.join(odir,f'nova_dens_{ctime}.png')
@@ -57,10 +60,9 @@ def plot_dens(fn, odir, fontsize=16):
     pl.close()
 ###
 
-def plot_vtot(fn, odir, fontsize=16):
-    zlimit = [4.6, 7.4]
+def plot_vtot(fn, odir, fontsize=18):
 
-    fig, ax = pl.subplots(1, 1,figsize=(8,8), dpi=150)
+    fig, ax = pl.subplots(1, 1,figsize=(10,8), dpi=150)
     # fig.subplots_adjust(wspace=0.01, hspace=0.05)
 
     if not os.path.exists(fn):
@@ -79,6 +81,10 @@ def plot_vtot(fn, odir, fontsize=16):
     Z       = np.log10( np.sqrt( ldata['velx']**2+ldata['vely']**2+ldata['velz']**2 ) )
     ctime   = int(ldata['time']/day)
 
+    cmap = pl.cm.get_cmap('coolwarm', 512)
+    zlimit = np.round( [Z.min(),Z.max()], 1 )
+    zlimit[0] = 5.3
+
     decimate = 50
     cf = ax.contourf(X, Y, Z, np.linspace(zlimit[0], zlimit[1], 512), cmap=cmap, extend='both')
     Q  = ax.quiver(X[::decimate,::decimate],Y[::decimate,::decimate],Vx[::decimate,::decimate]/Vabs[::decimate,::decimate],Vy[::decimate,::decimate]/Vabs[::decimate,::decimate], units='xy',color=[0.1,0.1,0.1], edgecolors=[0.0,0.0,0.0])
@@ -93,9 +99,10 @@ def plot_vtot(fn, odir, fontsize=16):
     ax.set_xlabel(r'$X/AU$', size=fontsize)
     ax.set_ylabel(r'$Z/AU$', size=fontsize)
 
-    fig.text(0.4, 0.886, r'$\log ~ \left| \vec V \right| ~ \rm{[cm/s]}$', fontsize=fontsize)
-    cax = pl.axes([0.91, 0.12, 0.022, 0.74])
-    cbobj = fig.colorbar(cf, cax=cax, format='%2.1f', ticks=np.round(np.arange(zlimit[0],zlimit[1]-0.1,0.1),1))
+    fig.text(0.4, 0.897, r'$\log ~ \left| \vec V \right| ~ \rm{[cm/s]}$', fontsize=fontsize)
+    # cax = pl.axes([0.91, 0.12, 0.022, 0.74])
+    # cbobj = fig.colorbar(cf, cax=cax, format='%2.1f', ticks=np.round(np.arange(zlimit[0],zlimit[1]+0.1,0.3),1))
+    cbobj = fig.colorbar(cf, ax=ax, format='%2.1f', ticks=np.round(np.arange(zlimit[0],zlimit[1]+0.1,0.3),1))
     cbobj.ax.tick_params(axis='both', labelsize=fontsize)
 
     ofn = os.path.join(odir,f'nova_vtot_{ctime}.png')
@@ -103,13 +110,12 @@ def plot_vtot(fn, odir, fontsize=16):
     pl.close()
 ###
 
-def plot_temp(fn, odir, fontsize=16):
-    zlimit = [3., 3.6]
-
+def plot_temp(fn, odir, fontsize=18):
+    
     if not os.path.exists(fn):
         raise Exception(f'File not found {fn}')
     
-    fig, ax = pl.subplots(1, 1,figsize=(8,8), dpi=150)
+    fig, ax = pl.subplots(1, 1,figsize=(10,8), dpi=150)
     # fig.subplots_adjust(wspace=0.01, hspace=0.05)
 
     ldata = np.load(fn)
@@ -121,6 +127,9 @@ def plot_temp(fn, odir, fontsize=16):
     Y       = ldata['Z']/AU
     Z       = np.log10(ldata['temp'])
     ctime   = int(ldata['time']/day)
+
+    cmap = pl.cm.get_cmap('coolwarm', 512)
+    zlimit = np.round( [Z.min(),Z.max()], 1 )
 
     decimate = 50
     cf = ax.contourf(X, Y, Z, np.linspace(zlimit[0], zlimit[1], 512), cmap=cmap, extend='both')
@@ -134,9 +143,10 @@ def plot_temp(fn, odir, fontsize=16):
     ax.set_xlabel(r'$X/AU$', size=fontsize)
     ax.set_ylabel(r'$Z/AU$', size=fontsize)
 
-    fig.text(0.4, 0.886, r'$\log ~ T ~ \rm{[K]}$', fontsize=fontsize)
-    cax = pl.axes([0.91, 0.12, 0.022, 0.74])
-    cbobj = fig.colorbar(cf, cax=cax, format='%2.1f', ticks=np.round(np.arange(zlimit[0],zlimit[1]-0.1,0.1),1))
+    fig.text(0.4, 0.897, r'$\log ~ T ~ \rm{[K]}$', fontsize=fontsize)
+    # cax = pl.axes([0.91, 0.12, 0.022, 0.74])
+    # cbobj = fig.colorbar(cf, cax=cax, format='%2.1f', ticks=np.round(np.arange(zlimit[0],zlimit[1]+0.1,0.1),1))
+    cbobj = fig.colorbar(cf, ax=ax, format='%2.2f', ticks=np.round(np.arange(zlimit[0],zlimit[1]+0.01,0.05),2))
     cbobj.ax.tick_params(axis='both', labelsize=fontsize)
 
     ofn = os.path.join(odir,f'nova_temp_{ctime}.png')
@@ -145,9 +155,9 @@ def plot_temp(fn, odir, fontsize=16):
 ###
 
 def main():
-    chk_dir = '/home/amirm/code/fast_blue_optical_transients/dd/t5'
+    chk_dir = '/home/amirm/code/fast_blue_optical_transients/dd/t4'
     odir    = '/home/amirm/code/fast_blue_optical_transients/plots/'
-    fname = [os.path.join(chk_dir,f'xx_zz_dens_time_{i:04}.npz') for i in (160, 160, 160) ]
+    fname = [os.path.join(chk_dir,f'xx_zz_dens_time_{i:04}.npz') for i in (493, 493, 493) ]
     plot_dens(fname[0],odir)
     plot_temp(fname[1],odir)
     plot_vtot(fname[2],odir)
