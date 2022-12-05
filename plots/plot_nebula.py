@@ -154,13 +154,63 @@ def plot_temp(fn, odir, fontsize=18):
     pl.close()
 ###
 
+def plot_dens_zoom(fn, odir, fontsize=18):
+
+    if not os.path.exists(fn):
+        raise Exception(f'File not found (plot_dens) {fn}')
+
+    fig, ax = pl.subplots(1, 1,figsize=(10,8), dpi=150)
+    # fig.subplots_adjust(wspace=0.01, hspace=0.05)
+
+    ldata = np.load(fn)
+    # xlimit  = np.array([ldata['X'].min(), ldata['X'].max()])/AU
+    # ylimit  = np.array([ldata['Z'].min(), ldata['Z'].max()])/AU
+    xlimit  = [-30., 30.]
+    ylimit  = [-30., 30.]
+    X       = ldata['X']/AU
+    Y       = ldata['Z']/AU
+    Z       = np.log10(ldata['dens'])
+    ctime   = int(ldata['time']/day)
+
+    cmap = pl.cm.get_cmap('Spectral', 512)
+    zlimit = np.round( [Z.min(),Z.max()], 1 )
+
+    decimate = 50
+    cf = ax.contourf(X, Y, Z, np.linspace(zlimit[0], zlimit[1], 512), cmap=cmap, extend='both')
+    ax.set_xlim(xlimit[0],xlimit[1])
+    ax.set_ylim(ylimit[0],ylimit[1])
+    ax.set_aspect('equal')
+    ax.text(xlimit[0]*(1-0.067), ylimit[1]*(1-0.2), f't={ctime} d', bbox=dict(boxstyle="round", fc="w"), fontsize=fontsize)
+
+    ax.tick_params(axis='both', labelsize=fontsize)
+    ax.minorticks_on()
+    ax.set_xlabel(r'$X/AU$', size=fontsize)
+    ax.set_ylabel(r'$Z/AU$', size=fontsize)
+
+    fig.text(0.4, 0.897, r'$\log~\rho~[\rm{g~cm^{-3}}]$', fontsize=fontsize)
+    # cax = pl.axes([0.91, 0.12, 0.022, 0.74])
+    # cbobj = fig.colorbar(cf, cax=cax, format='%2.1f', ticks=np.round(np.arange(zlimit[0],zlimit[1]+0.1,0.5),1))
+    cbobj = fig.colorbar(cf, ax=ax, format='%2.1f', ticks=np.round(np.arange(zlimit[0],zlimit[1]+0.1,0.5),1))
+    cbobj.ax.tick_params(axis='both', labelsize=fontsize)
+
+    ofn = os.path.join(odir,f'nova_dens_{ctime}_zoom.png')
+    fig.savefig(ofn, dpi=150, facecolor='w', edgecolor='w', orientation='portrait', transparent=False, bbox_inches=None, pad_inches=0.1)
+    pl.close()
+###
+
 def main():
+    # chk_dir = '/home/amirm/code/fast_blue_optical_transients/dd/t4'
+    # odir    = '/home/amirm/code/fast_blue_optical_transients/plots/'
+    # fname = [os.path.join(chk_dir,f'xx_zz_dens_time_{i:04}.npz') for i in (493, 493, 493) ]
+    # plot_dens(fname[0],odir)
+    # plot_temp(fname[1],odir)
+    # plot_vtot(fname[2],odir)
+
     chk_dir = '/home/amirm/code/fast_blue_optical_transients/dd/t4'
-    odir    = '/home/amirm/code/fast_blue_optical_transients/plots/'
-    fname = [os.path.join(chk_dir,f'xx_zz_dens_time_{i:04}.npz') for i in (493, 493, 493) ]
-    plot_dens(fname[0],odir)
-    plot_temp(fname[1],odir)
-    plot_vtot(fname[2],odir)
+    odir    = '/home/amirm/code/fast_blue_optical_transients/rph/t4'
+    fname = [os.path.join(chk_dir,f'xx_zz_dens_time_{i:04}.npz') for i in (30,) ]
+    for fn in fname:
+        plot_dens_zoom(fn,odir)
 ###
 
 if __name__ == "__main__":
