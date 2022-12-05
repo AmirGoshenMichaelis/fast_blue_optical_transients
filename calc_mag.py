@@ -88,7 +88,7 @@ def calc(no, fix_kappa):
             dr = np.mean(dr)
             if dr==0: dr=1e-16
             # photosphere_radios = np.sum( np.abs(2.*np.pi*los_sys[0,pos]*dr) )*sigma_sb*(8224**4) 
-            photosphere_radios = 4. * np.sum( np.abs(2.*np.pi*los_sys[0,pos]*dr) )*sigma_sb*(3e3**4) 
+            photosphere_radios = 4. * np.sum( np.abs(2.*np.pi*los_sys[0,pos]*dr) )*sigma_sb*(7e3**4) 
             # photosphere_radios = np.sqrt( np.sum( np.abs(2.*los_sys[0,pos]*dr) ) )
             # photosphere_radios = np.sqrt( np.sum( np.abs(los_sys[0,pos]*dr)*teff_pos**4/np.sum(teff_pos**4) ) )
             # photosphere_radios = np.max(los_sys[0,pos])
@@ -138,8 +138,8 @@ def do_calc(rph_npz_fn, fix_kappa):
     np.savez(rph_npz_fn, t=t, r_ph=r_ph)
 ###
 def main():
-    # fix_kappa_list = [0.06, 0.3, 1.5, 0.1, 0.2]
-    fix_kappa_list = [0.005, 0.01,]
+    fix_kappa_list = [0.06, 0.3, 1.5, 0.1, 0.2]
+    # fix_kappa_list = [0.005, 0.01,]
     for fix_kappa in fix_kappa_list:
         rph_npz_fn = os.path.join(odir, f'mag_{fix_kappa}_T_{Temp/1e3:.0f}e3.npz')
         if not os.path.exists(rph_npz_fn):

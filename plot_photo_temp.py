@@ -30,7 +30,7 @@ odir = f'/home/amirm/code/fast_blue_optical_transients/photosphere/{exp_dir}/'
 os.chdir(dir)
 cmap = pl.cm.get_cmap('coolwarm', 512)
 # temp_limit = [3.7, 4.6]
-temp_limit = [3., 4.2]
+temp_limit = [3., 4.5]
 ###
 def find_dynamic_range():
     logT = []
@@ -67,8 +67,8 @@ def calc(no):
     Vx   = Vx/Vtot
     Vy   = Vy/Vtot
     ctime = dd['time']/day
-    for fix_kappa in [0.06, 0.3, 1.5, 0.1, 0.2]:
-    # for fix_kappa in [0.01,]:
+    # for fix_kappa in [0.06, 0.3, 1.5, 0.1, 0.2]:
+    for fix_kappa in [0.1,]:
         fn = os.path.join(dir, 'TRL_eff_{:04}_fix_kappa_{}.npz'.format(no, fix_kappa) )
         if not os.path.exists(fn):
             print('skipping {}'.format(fn))
@@ -86,7 +86,7 @@ def calc(no):
 
         pr_phi = 0.
         # for pr_theta in [10, 30, 50, 80,]:
-        for pr_theta in [10, 50, 80,]:
+        for pr_theta in [10, 50,]:
             fig, ax = pl.subplots()
             decimate = 20
             cf = ax.contourf(X, Y, Z, np.linspace(temp_limit[0], temp_limit[1], 512), cmap=cmap, extend='both')
