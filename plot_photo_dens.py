@@ -29,7 +29,7 @@ dir  = f'/home/amirm/code/fast_blue_optical_transients/dd/{exp_dir}/'
 odir = f'/home/amirm/code/fast_blue_optical_transients/photosphere/{exp_dir}/'
 os.chdir(dir)
 cmap = pl.cm.get_cmap('Spectral', 512)
-dens_limit = [-17.0, -12.0]
+dens_limit = [-15.9, -10.7]
 ###
 def find_dynamic_range():
     logT = []
@@ -84,7 +84,7 @@ def calc(no):
 
         pr_phi = 0.
         # for pr_theta in [10, 30, 50, 80,]:
-        for pr_theta in [10, 50,]:
+        for pr_theta in [10, 80,]:
             fig, ax = pl.subplots()
             cf    = ax.contourf(X, Y, Z, np.linspace(dens_limit[0], dens_limit[1], 512), cmap=cmap, extend='both')
             decimate = 20
