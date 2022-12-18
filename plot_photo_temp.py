@@ -86,7 +86,7 @@ def calc(no):
 
         pr_phi = 0.
         # for pr_theta in [10, 30, 50, 80,]:
-        for pr_theta in [10, 50,]:
+        for pr_theta in [10, 80,]:
             fig, ax = pl.subplots()
             decimate = 20
             cf = ax.contourf(X, Y, Z, np.linspace(temp_limit[0], temp_limit[1], 512), cmap=cmap, extend='both')
