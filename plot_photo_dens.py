@@ -29,7 +29,7 @@ dir  = f'/home/amirm/code/fast_blue_optical_transients/dd/{exp_dir}/'
 odir = f'/home/amirm/code/fast_blue_optical_transients/photosphere/{exp_dir}/'
 os.chdir(dir)
 cmap = pl.cm.get_cmap('Spectral', 512)
-dens_limit = [-15.9, -10.7]
+dens_limit = [-16.5, -10.6]
 ###
 def find_dynamic_range():
     logT = []

@@ -30,7 +30,7 @@ odir = f'/home/amirm/code/fast_blue_optical_transients/photosphere/{exp_dir}/'
 os.chdir(dir)
 cmap = pl.cm.get_cmap('coolwarm', 512)
 # temp_limit = [3.7, 4.6]
-temp_limit = [3., 4.7]
+temp_limit = [3., 5.]
 ###
 def find_dynamic_range():
     logT = []
